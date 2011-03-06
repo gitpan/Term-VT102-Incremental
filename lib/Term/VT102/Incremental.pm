@@ -1,4 +1,7 @@
 package Term::VT102::Incremental;
+BEGIN {
+  $Term::VT102::Incremental::VERSION = '0.02';
+}
 use Moose;
 use Term::VT102;
 # ABSTRACT: get VT updates in increments
@@ -65,7 +68,7 @@ sub get_increment {
             my $prev = $screen->[$row]->[$col];
             $screen->[$row]->[$col] = {%data}; # clone
 
-            if ($prev) {
+            if (scalar keys %$prev) {
                 foreach my $attr (keys %data) {
 
                     delete $data{$attr}
@@ -94,7 +97,7 @@ Term::VT102::Incremental - get VT updates in increments
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 SYNOPSIS
 
@@ -113,7 +116,7 @@ version 0.01
 =head1 DESCRIPTION
 
 Term::VT102::Incremental is a thin wrapper around L<Term::VT102> with a few
-internal differences.
+internal differences. This module takes the B<exact same arguments in the constructor> as L<Term::VT102>, but has one extra method: C<get_increment>.
 
 =head1 ATTRIBUTES
 
