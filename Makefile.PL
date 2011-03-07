@@ -19,8 +19,11 @@ my %WriteMakefileArgs = (
   'EXE_FILES' => [],
   'LICENSE' => 'perl',
   'NAME' => 'Term::VT102::Incremental',
-  'PREREQ_PM' => {},
-  'VERSION' => '0.02',
+  'PREREQ_PM' => {
+    'Moose' => '0.51',
+    'Term::VT102' => '0.91'
+  },
+  'VERSION' => '0.03',
   'test' => {
     'TESTS' => 't/*.t'
   }

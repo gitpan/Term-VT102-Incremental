@@ -1,6 +1,6 @@
 package Term::VT102::Incremental;
 BEGIN {
-  $Term::VT102::Incremental::VERSION = '0.02';
+  $Term::VT102::Incremental::VERSION = '0.03';
 }
 use Moose;
 use Term::VT102;
@@ -97,7 +97,7 @@ Term::VT102::Incremental - get VT updates in increments
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 

@@ -12,7 +12,10 @@ meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
 name: Term-VT102-Incremental
-version: 0.02
+requires:
+  Moose: 0.51
+  Term::VT102: 0.91
+version: 0.03
 x_Dist_Zilla:
   plugins:
     -

@@ -18,10 +18,16 @@
          "requires" : {
             "ExtUtils::MakeMaker" : "6.31"
          }
+      },
+      "runtime" : {
+         "requires" : {
+            "Moose" : "0.51",
+            "Term::VT102" : "0.91"
+         }
       }
    },
    "release_status" : "stable",
-   "version" : "0.02",
+   "version" : "0.03",
    "x_Dist_Zilla" : {
       "plugins" : [
          {
