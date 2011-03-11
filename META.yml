@@ -15,7 +15,7 @@ name: Term-VT102-Incremental
 requires:
   Moose: 0.51
   Term::VT102: 0.91
-version: 0.03
+version: 0.04
 x_Dist_Zilla:
   plugins:
     -

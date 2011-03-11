@@ -1,6 +1,6 @@
 package Term::VT102::Incremental;
 BEGIN {
-  $Term::VT102::Incremental::VERSION = '0.03';
+  $Term::VT102::Incremental::VERSION = '0.04';
 }
 use Moose;
 use Term::VT102;
@@ -21,6 +21,7 @@ has vt => (
 has _screen => (
     is        => 'ro',
     isa       => 'ArrayRef[ArrayRef[HashRef]]',
+    lazy      => 1,
     default   => sub {
         my $self = shift;
         my ($rows, $cols) = ($self->rows, $self->cols);
@@ -34,7 +35,7 @@ has _screen => (
 );
 
 around BUILDARGS => sub {
-    my $orig = shift;
+    my $orig  = shift;
     my $class = shift;
 
     my @vt_args  = @_;
@@ -97,7 +98,7 @@ Term::VT102::Incremental - get VT updates in increments
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 
