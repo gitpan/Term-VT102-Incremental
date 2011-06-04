@@ -9,7 +9,8 @@ dist.ini
 lib/Term/VT102/Incremental.pm
 t/00-basic.t
 t/00-compile.t
-t/01-increment.t
+t/extend.t
+t/increment.t
 t/release-eol.t
 t/release-no-tabs.t
 t/release-pod-coverage.t

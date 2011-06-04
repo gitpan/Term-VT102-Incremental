@@ -1,6 +1,6 @@
 package Term::VT102::Incremental;
 BEGIN {
-  $Term::VT102::Incremental::VERSION = '0.04';
+  $Term::VT102::Incremental::VERSION = '0.05';
 }
 use Moose;
 use Term::VT102;
@@ -9,8 +9,7 @@ use Term::VT102;
 
 
 
-
-
+use constant vt_class => 'Term::VT102';
 
 has vt => (
     is      => 'ro',
@@ -34,16 +33,47 @@ has _screen => (
     },
 );
 
+has rows_updated => (
+    is => 'ro',
+    isa => 'ArrayRef[Bool]',
+    lazy => 1,
+    clearer => '_clear_rows_updated',
+    default => sub { [ (0) x shift->rows ] },
+);
+
 around BUILDARGS => sub {
     my $orig  = shift;
     my $class = shift;
 
     my @vt_args  = @_;
 
-    my $vt = Term::VT102->new(@vt_args);
+    my $vt = $class->vt_class->new(@vt_args);
 
     return $class->$orig(vt => $vt);
 };
+
+
+sub BUILD {
+    my $self = shift;
+
+    my $rows_updated = $self->rows_updated;
+    my $rows = $self->rows - 1;
+
+    $self->vt->callback_set(
+        'ROWCHANGE', sub {
+            my (undef, undef, $row) = @_;
+            $self->rows_updated->[$row - 1] = 1;
+        }
+    );
+    for my $cb (qw/SCROLL_DOWN SCROLL_UP/) {
+        $self->vt->callback_set(
+            $cb, sub {
+                my (undef, undef, $row) = @_;
+                @{$self->rows_updated}[$_] = 1 for $row-1 .. $rows;
+            }
+        );
+    }
+}
 
 
 sub get_increment {
@@ -53,6 +83,7 @@ sub get_increment {
     my %updates;
     my @data;
     foreach my $row (0 .. $self->rows-1) {
+        next unless $self->rows_updated->[$row];
         my $line = $vt->row_plaintext($row + 1);
         my $att = $vt->row_attr($row + 1);
 
@@ -81,6 +112,7 @@ sub get_increment {
         }
     }
 
+    $self->_clear_rows_updated;
     return \@data;
 }
 
@@ -98,7 +130,7 @@ Term::VT102::Incremental - get VT updates in increments
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 SYNOPSIS
 
@@ -140,6 +172,13 @@ See L<Term::VT102>'s C<rows>.
 
 See L<Term::VT102>'s C<cols>.
 
+=head2 vt_class
+
+Returns the name of the VT class that the internal
+VT object will use when instantiated. Currently defaults
+too L<Term::VT102> but can be overridden by extending this
+class.
+
 =head2 get_increment
 
 After one or more updates, you can call C<get_increment> to see the incremental
@@ -171,13 +210,7 @@ Cell properties consist of:
 See the C<attr_pack> method in the L<Term::VT102> documentation for details
 on this.
 
-=head1 BUGS
-
-No known bugs.
-
-Please report any bugs through RT: email
-C<bug-term-vt102-incremental at rt.cpan.org>, or browse to
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Term-VT102-Incremental>.
+=for Pod::Coverage BUILD
 
 =head1 AUTHOR
 
